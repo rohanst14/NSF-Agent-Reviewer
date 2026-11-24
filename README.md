@@ -12,14 +12,9 @@ Open http://127.0.0.1:8000. Configure a supported provider (OpenAI, Anthropic, G
 
 ## Architecture
 
-```mermaid
-flowchart TD
- A[Proposal and solicitation] --> B[Compliance review]
- B --> C[Three independent reviewers]
- C --> D[Panel deliberation]
- D --> E[Final votes]
- E --> F[Consensus synthesis]
-```
+![NSF Agent Reviewer | Multi-agent panel](docs/architecture.svg)
+
+A blocking compliance result skips substantive review. Otherwise, the server launches three independent full reviews, then runs opening positions, peer debate and final voting. Structured reports and consensus are returned to the browser through the job-status interface.
 
 ## Documentation
 
