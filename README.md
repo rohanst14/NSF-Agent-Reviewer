@@ -10,9 +10,9 @@ python3 nsf_reviewer_server.py
 
 Open http://127.0.0.1:8000. Configure a supported provider (OpenAI, Anthropic, Gemini or Ollama). The Python backend uses the standard library. PDF extraction uses PDF.js via CDN; alternatively paste text.
 
-## Architecture
+## NSF Agent Reviewer Framework
 
-![NSF Agent Reviewer | Multi-agent panel](docs/architecture.svg)
+![NSF proposal review framework](docs/NSF-framework-white.png)
 
 A blocking compliance result skips substantive review. Otherwise, the server launches three independent full reviews, then runs opening positions, peer debate and final voting. Structured reports and consensus are returned to the browser through the job-status interface.
 
