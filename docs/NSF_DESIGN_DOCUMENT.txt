@@ -1,0 +1,735 @@
+NSF Multi-Agent Proposal Reviewer System
+Revised Design Document
+
+================================================================
+1. SYSTEM OVERVIEW
+================================================================
+
+Purpose
+
+Create an AI-powered review system that mirrors a more realistic
+NSF-style panel workflow:
+
+- One Compliance Agent validates proposal format, eligibility, and
+  solicitation requirements
+- Three independent Reviewer Agents each perform a complete proposal review
+- Each reviewer evaluates the same proposal across all major review dimensions:
+  - Intellectual Merit
+  - Broader Impacts
+  - Technical Depth and Feasibility
+- The three reviewers submit independent critiques and recommendations
+  before seeing each other's reports
+- The three reviewers then engage in a structured panel-style debate
+- A final consensus report is produced from the reviewers' discussion
+  and final votes
+
+Architectural Correction From Prior Draft
+
+The earlier draft treated the three reviewers as specialized agents:
+
+- Reviewer 1 = Intellectual Merit only
+- Reviewer 2 = Broader Impacts only
+- Reviewer 3 = Technical Deep Dive only
+
+That is not the intended workflow.
+
+The correct workflow is:
+
+- Reviewer 1 = full review
+- Reviewer 2 = full review
+- Reviewer 3 = full review
+
+Each reviewer must assess the full proposal and produce an individual
+critique and recommendation, as happens in a real review setting.
+
+Key Features
+
+- Upload proposal and solicitation documents
+- Input API keys in the interface
+- Run one compliance review first
+- Run three full reviewer agents in parallel after compliance passes
+- Generate three independent reviewer reports
+- Show real-time panel discussion between the three reviewers
+- Support structured debate rounds
+- Produce a final consensus recommendation
+- Preserve a full audit trail of reports, discussion, and final votes
+
+================================================================
+2. SYSTEM ARCHITECTURE
+================================================================
+
+High-Level Flow
+
+User uploads:
+- Proposal
+- Solicitation
+
+Then:
+
+Phase 1: Compliance Check
+- Validate formatting
+- Validate required sections
+- Validate eligibility and solicitation-specific requirements
+
+Outcomes:
+- FAIL / BLOCKING ISSUE
+  - Stop review
+  - Return compliance findings and required fixes
+
+- PASS / CONDITIONAL PASS
+  - Continue to full review
+
+Phase 2: Independent Full Reviews (Parallel)
+- Reviewer A: full proposal review
+- Reviewer B: full proposal review
+- Reviewer C: full proposal review
+
+Each reviewer evaluates:
+- Intellectual Merit
+- Broader Impacts
+- Technical depth, rigor, and feasibility
+
+Phase 3: Structured Panel Discussion
+- Round 1: Opening positions
+- Round 2: Challenges and counter-points
+- Round 3: Final positions and votes
+
+Phase 4: Final Synthesis
+- Consensus strengths
+- Consensus weaknesses
+- Areas of disagreement
+- Vote summary
+- Final recommendation
+
+Core Principle
+
+The system separates:
+
+- Compliance review: objective rules and requirements
+- Scientific/programmatic review: substantive evaluation by three
+  independent reviewers
+
+The Compliance Agent is not a substitute for panel review and should
+not be treated as one of the three scientific reviewers.
+
+================================================================
+3. AGENT DEFINITIONS
+================================================================
+
+Agent 1: Compliance Agent
+
+Role:
+Validates proposal structure, formatting, eligibility, and
+solicitation requirements
+
+Runs:
+First, independently
+
+Primary Responsibility:
+Gatekeeping and requirement validation
+
+Evaluation Areas
+
+- General NSF formatting and structure requirements
+- Required sections present
+- Solicitation or program-specific requirements
+- Budget and duration compliance
+- PI / Co-PI eligibility
+- Institutional eligibility
+- Other administrative or compliance issues
+
+Output Format
+
+- Status: PASS, CONDITIONAL PASS, or FAIL
+- Executive summary
+- Findings by requirement area
+- Blocking issues
+- Non-blocking issues
+- Recommended fixes
+
+Agent 2: Reviewer A
+
+Role:
+Independent full proposal reviewer
+
+Runs:
+After compliance pass, in parallel with Reviewer B and Reviewer C
+
+Primary Responsibility:
+Complete NSF-style review of the proposal
+
+Agent 3: Reviewer B
+
+Role:
+Independent full proposal reviewer
+
+Runs:
+After compliance pass, in parallel with Reviewer A and Reviewer C
+
+Primary Responsibility:
+Complete NSF-style review of the proposal
+
+Agent 4: Reviewer C
+
+Role:
+Independent full proposal reviewer
+
+Runs:
+After compliance pass, in parallel with Reviewer A and Reviewer B
+
+Primary Responsibility:
+Complete NSF-style review of the proposal
+
+Reviewer Evaluation Scope
+
+Each of the three reviewers must independently evaluate all of the following:
+
+1. Intellectual Merit
+- Advancement of knowledge in the field
+- Originality and novelty
+- Clarity of research questions
+- Methodological rigor
+- Feasibility of the proposed work
+- Qualifications of the team
+- Adequacy of resources
+
+2. Broader Impacts
+- Societal benefit and relevance
+- Education and workforce development
+- Diversity, equity, inclusion, and access
+- Public engagement or knowledge dissemination
+- Infrastructure or community impact
+- Long-term sustainability of impact
+
+3. Technical Depth and Feasibility
+- Literature grounding and current state of the art
+- Technical soundness of methods
+- Experimental or computational design
+- Data management considerations
+- Risk identification and mitigation
+- Timeline realism
+- Prior results and readiness
+
+Reviewer Output Format
+
+Each reviewer report should include:
+
+- Executive summary
+- Intellectual Merit assessment
+- Broader Impacts assessment
+- Technical Deep Dive assessment
+- Major strengths
+- Major weaknesses or concerns
+- Key questions for the PI team
+- Actionable recommendations
+- Sub-scores:
+  - Intellectual Merit Score: 1-10
+  - Broader Impacts Score: 1-10
+  - Technical Score: 1-10
+- Overall score: 1-10
+- Vote:
+  - RECOMMEND
+  - RECOMMEND WITH REVISIONS
+  - RECONSIDER
+  - DO NOT RECOMMEND
+
+================================================================
+4. REVIEW WORKFLOW
+================================================================
+
+Phase 1: Compliance Gate
+
+The system first runs the Compliance Agent against the proposal and solicitation.
+
+Outcomes
+
+- FAIL
+  - Review process stops
+  - User receives compliance findings and required fixes
+
+- CONDITIONAL PASS
+  - Process may continue
+  - Findings remain visible to reviewers as context
+
+- PASS
+  - Process continues normally
+
+Phase 2: Independent Reviewer Reports
+
+If compliance is acceptable, the system launches three independent
+reviewer agents in parallel.
+
+Rules
+
+- Reviewers should not see each other's reports during this phase
+- Reviewers should each read the proposal and solicitation directly
+- Compliance findings may be included as context, but not as a substitute
+  for review
+- Each reviewer must produce a full report covering all three review dimensions
+
+Phase 3: Panel Discussion
+
+After all three independent reviews are complete, the reviewers enter
+a structured discussion phase.
+
+Goals
+
+- Surface points of agreement
+- Surface disagreements
+- Pressure-test assumptions
+- Clarify confidence levels
+- Refine recommendations
+
+Phase 4: Final Positions and Consensus
+
+At the end of the discussion, each reviewer issues a final position and vote.
+The system then synthesizes:
+
+- Shared strengths
+- Shared weaknesses
+- Unresolved concerns
+- Vote summary
+- Final recommendation
+
+================================================================
+5. DISCUSSION AND DEBATE PROTOCOL
+================================================================
+
+The discussion panel should include the three Reviewer Agents only.
+
+The Compliance Agent does not participate as a debating reviewer.
+Its findings remain available as reference context.
+
+Round 1: Opening Positions
+
+Participants:
+Reviewer A, Reviewer B, Reviewer C
+
+Purpose:
+Each reviewer summarizes their independent full review
+
+Length Target:
+Approximately 400-600 tokens per reviewer
+
+Each opening statement should cover:
+
+- Overall assessment
+- Most important strengths
+- Most important weaknesses
+- Notable concerns about merit, impacts, or technical feasibility
+- Preliminary vote
+
+Display Format
+
+[Reviewer A]: "My independent review finds..."
+[Reviewer B]: "From my reading of the proposal..."
+[Reviewer C]: "The proposal is strongest in... but weak in..."
+
+Round 2: Counter-Points and Challenges
+
+Participants:
+Reviewer A, Reviewer B, Reviewer C
+
+Purpose:
+Reviewers respond to each other's claims
+
+Length Target:
+Approximately 300-500 tokens per reviewer
+
+Each response should:
+
+- Reference specific points from other reviewers
+- Agree, disagree, or refine a claim
+- Challenge unsupported assumptions
+- Clarify uncertainty or confidence
+- Identify whether debate changed the reviewer's position
+
+Display Format
+
+[Reviewer B]: "I agree with Reviewer A on the novelty question, but..."
+[Reviewer C]: "Reviewer B underweights the implementation risk because..."
+[Reviewer A]: "After hearing both perspectives, my concern is now..."
+
+Round 3: Final Positions
+
+Participants:
+Reviewer A, Reviewer B, Reviewer C
+
+Purpose:
+Each reviewer provides a final panel position and vote
+
+Length Target:
+Approximately 200-350 tokens per reviewer
+
+Each final position should include:
+
+- Final recommendation
+- What changed, if anything, after discussion
+- The biggest remaining concern
+- The strongest reason to support or oppose the proposal
+
+Display Format
+
+[Reviewer A]: "Final position: strong science with manageable risk. VOTE: RECOMMEND WITH REVISIONS"
+[Reviewer B]: "Final position: broader impacts are credible but underdeveloped. VOTE: RECONSIDER"
+[Reviewer C]: "Final position: technically strong and fundable with revisions. VOTE: RECOMMEND WITH REVISIONS"
+
+================================================================
+6. FINAL RECOMMENDATION LOGIC
+================================================================
+
+Reviewer Votes
+
+Only the three scientific reviewers vote on the final recommendation:
+
+- RECOMMEND
+- RECOMMEND WITH REVISIONS
+- RECONSIDER
+- DO NOT RECOMMEND
+
+Consensus Determination
+
+The synthesis logic should prioritize majority reviewer judgment while
+preserving dissent.
+
+Suggested Mapping
+
+- 3 x RECOMMEND -> Final recommendation: RECOMMEND
+- 2 x RECOMMEND + 1 x RECOMMEND WITH REVISIONS -> RECOMMEND WITH REVISIONS
+- 1 x RECOMMEND + 2 x RECOMMEND WITH REVISIONS -> RECOMMEND WITH REVISIONS
+- 3 x RECOMMEND WITH REVISIONS -> RECOMMEND WITH REVISIONS
+- Majority RECONSIDER -> RECONSIDER
+- Any majority DO NOT RECOMMEND -> DO NOT RECOMMEND
+
+Final Report Must Include
+
+- Compliance result
+- Reviewer vote summary
+- Consensus strengths
+- Consensus weaknesses
+- Major unresolved disagreements
+- Reviewer-specific dissent, if any
+- Action items for revision, if applicable
+- Final recommendation with rationale
+
+================================================================
+7. USER INTERFACE REQUIREMENTS
+================================================================
+
+Section 1: Input Area
+
+NSF MULTI-AGENT PROPOSAL REVIEWER
+
+1. API CONFIGURATION
+- Anthropic API Key
+- OpenAI API Key
+- Optional local save toggle
+
+2. DOCUMENT INPUT
+- Proposal upload
+- Solicitation upload
+
+3. RUN REVIEW
+- Analyze Proposal button
+
+Section 2: Progress Tracking
+
+PROCESSING STATUS
+
+1. Compliance Check            [PASS / FAIL / RUNNING]
+2. Reviewer A Report           [READY / RUNNING]
+3. Reviewer B Report           [READY / RUNNING]
+4. Reviewer C Report           [READY / RUNNING]
+5. Panel Discussion Round 1    [READY / RUNNING]
+6. Panel Discussion Round 2    [READY / RUNNING]
+7. Final Positions             [READY / RUNNING]
+8. Final Synthesis             [READY / RUNNING]
+
+Section 3: Results Tabs
+
+Tab 1: Compliance Report
+- Pass / fail / conditional result
+- Findings by requirement area
+- Required fixes
+
+Tab 2: Reviewer Reports
+- Reviewer A report
+- Reviewer B report
+- Reviewer C report
+
+Each reviewer view should show:
+- Executive summary
+- Intellectual Merit
+- Broader Impacts
+- Technical Deep Dive
+- Strengths
+- Weaknesses
+- Scores
+- Vote
+
+Tab 3: Panel Discussion
+- Real-time transcript
+- Separate rounds
+- Reviewer names attached to each message
+
+Tab 4: Final Consensus Report
+- Vote summary
+- Consensus strengths
+- Consensus weaknesses
+- Dissenting views
+- Action items
+- Final recommendation
+
+================================================================
+8. API AND MODEL ORCHESTRATION
+================================================================
+
+Design Requirement
+
+The system should support Anthropic and OpenAI keys in the UI, but the
+reviewer architecture must not depend on criterion-specific provider assignment.
+
+Correct Orchestration Pattern
+
+- Compliance Agent: one configured model
+- Reviewer A: one configured model
+- Reviewer B: one configured model
+- Reviewer C: one configured model
+
+Each reviewer is independent and complete.
+
+Configuration Guidance
+
+Support model selection per agent, but keep the role definition
+separate from the model/provider choice.
+
+Example:
+
+- Compliance Agent -> configurable provider/model
+- Reviewer A -> configurable provider/model
+- Reviewer B -> configurable provider/model
+- Reviewer C -> configurable provider/model
+
+This prevents the system from hard-coding:
+
+- one provider for merit only
+- one provider for impacts only
+- one provider for technical only
+
+================================================================
+9. CODE STRUCTURE (PLAIN JAVASCRIPT)
+================================================================
+
+File Organization
+
+nsf-reviewer/
+  index.html
+  css/
+    styles.css
+  js/
+    main.js
+    agents.js
+    api.js
+    ui.js
+    storage.js
+    utils.js
+  README.md
+
+Key Functions
+
+Main flow
+- analyzeProposal(proposalText, solicitationText)
+
+Compliance
+- runComplianceAgent(proposalText, solicitationText, agentConfig)
+
+Independent reviewers
+- runReviewerAgent(reviewerId, proposalText, solicitationText, complianceReport, agentConfig)
+- runAllReviewerAgents(proposalText, solicitationText, complianceReport, reviewerConfigs)
+
+Discussion orchestration
+- roundOneDiscussion(reviewerReports)
+- roundTwoDebate(reviewerReports, roundOneMessages)
+- roundThreeFinalPositions(reviewerReports, discussionMessages)
+- synthesizeConsensus(complianceReport, reviewerReports, finalPositions, transcript)
+
+API handling
+- callAnthropicAPI(prompt, systemPrompt, model)
+- callOpenAIAPI(prompt, systemPrompt, model)
+
+UI rendering
+- displayComplianceReport(report)
+- displayReviewerReports(reports)
+- displayDiscussionChat(messages)
+- displayFinalConsensus(consensus)
+
+Security and storage
+- validateAPIKeys(keys)
+- storeKeysSecurely(keys)
+- clearStoredKeys()
+
+================================================================
+10. PROMPTING STRATEGY
+================================================================
+
+Compliance Agent System Prompt
+
+You are an NSF compliance reviewer. Evaluate the proposal against general NSF
+requirements and solicitation-specific requirements. Focus on objective
+compliance, structure, eligibility, required sections, and administrative fit.
+Do not evaluate scientific quality except where it directly affects compliance.
+Return PASS, CONDITIONAL PASS, or FAIL with specific findings and fixes.
+
+Reviewer System Prompt Template
+
+This same core prompt pattern should be used for Reviewer A, Reviewer B,
+and Reviewer C, with only reviewer identity changed.
+
+You are one of three independent NSF-style proposal reviewers.
+
+Your task is to perform a complete review of the proposal. You must evaluate:
+1. Intellectual Merit
+2. Broader Impacts
+3. Technical depth, rigor, and feasibility
+
+You are writing an independent reviewer report before panel discussion.
+Do not assume consensus. Do not try to average your opinion with others.
+
+Your report must include:
+- Executive summary
+- Intellectual Merit assessment
+- Broader Impacts assessment
+- Technical Deep Dive assessment
+- Major strengths
+- Major weaknesses
+- Key questions
+- Recommendations
+- Sub-scores and overall score
+- Final vote
+
+Debate Prompt Template
+
+You are continuing as the same reviewer in a panel discussion.
+
+You now have:
+- your original review
+- the other reviewers' reports
+- the discussion history so far
+
+Respond as an expert reviewer in a real panel conversation.
+Reference specific disagreements, refine your position if warranted,
+and keep your reasoning grounded in the proposal text and review criteria.
+
+================================================================
+11. ERROR HANDLING AND VALIDATION
+================================================================
+
+Input Validation
+
+- Proposal text minimum length threshold
+- Solicitation text minimum length threshold
+- Non-empty API keys for enabled providers
+- File type validation for uploaded files
+
+API Error Handling
+
+- Retry transient failures with exponential backoff
+- Surface invalid-key errors clearly
+- Continue partial progress where possible
+- Preserve already completed reports if a later step fails
+
+User Feedback
+
+- Real-time progress updates
+- Per-agent loading states
+- Clear error messages
+- Retry option
+- Cancel option
+
+================================================================
+12. SECURITY CONSIDERATIONS
+================================================================
+
+API Key Handling
+
+- Keys entered by the user in the browser UI
+- Keys stored only locally if the user opts in
+- Keys never logged to console output
+- Keys never forwarded to any server other than the selected model provider APIs
+- Ability to clear stored keys at any time
+
+Proposal Privacy
+
+- Proposal content processed only for review execution
+- No third-party tracking
+- No unnecessary persistence of proposal text
+- Clear disclosure of how data is used
+
+================================================================
+13. IMPLEMENTATION PHASES
+================================================================
+
+Phase 1: Foundation
+
+- Build HTML/CSS shell
+- Add API key configuration
+- Add document upload and text extraction
+- Add progress and tab layout
+
+Phase 2: Compliance Layer
+
+- Implement Compliance Agent
+- Render compliance result and blocking issues
+- Stop pipeline on compliance failure
+
+Phase 3: Independent Reviewer Layer
+
+- Implement three reviewer agent configurations
+- Run reviewer reports in parallel
+- Render individual reviewer reports
+
+Phase 4: Discussion Engine
+
+- Implement round-based panel debate
+- Stream messages into transcript UI
+- Collect final reviewer votes
+
+Phase 5: Final Synthesis
+
+- Aggregate votes
+- Build consensus strengths and weaknesses
+- Preserve dissent
+- Render final report and exportable output
+
+================================================================
+14. SUCCESS METRICS
+================================================================
+
+The system is successful if it:
+
+- accepts proposal and solicitation inputs
+- performs a valid compliance-first workflow
+- runs three independent full reviewer reports in parallel
+- ensures each reviewer evaluates all major NSF review dimensions
+- displays independent reports clearly
+- conducts a structured panel-style debate among the three reviewers
+- produces final reviewer votes
+- synthesizes a final recommendation with strengths, weaknesses, and dissent
+- preserves a full transcript and audit trail
+- handles API keys locally and safely
+
+================================================================
+15. SOURCE-OF-TRUTH SUMMARY
+================================================================
+
+The correct design is:
+
+- One Compliance Agent
+- Three independent full Reviewer Agents
+- Each reviewer assesses Intellectual Merit, Broader Impacts, and Technical Deep Dive
+- Each reviewer writes an independent report
+- The three reviewers debate
+- The three reviewers issue final votes
+- The system synthesizes a final consensus report
+
+This revised document replaces the earlier criterion-specialist reviewer model.

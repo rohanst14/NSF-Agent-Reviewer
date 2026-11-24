@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSF Proposal Review Panel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">NSF Proposal Review Automation</p>
+                <h1>Multi-agent based NSF Grant Reviewer</h1>
+                <p class="hero-text">
+                    This app runs a true multi-agent review workflow on your machine through a local Python server.
+                    The browser only handles input and display. One compliance review, three full NSF-style reviewers,
+                    and final panel consensus.
+                </p>
+                <div class="hero-note">
+                    Serve locally from <code>python3 nsf_reviewer_server.py</code> and open
+                    <code>http://127.0.0.1:8000</code>.
+                </div>
+            </div>
+            <div class="hero-card">
+                <div class="hero-card-label">Pipeline</div>
+                <ol>
+                    <li>Compliance review</li>
+                    <li>Reviewer A, B, C in parallel</li>
+                    <li>Round 1 positions</li>
+                    <li>Round 2 counter-points</li>
+                    <li>Round 3 final votes</li>
+                    <li>Consensus synthesis</li>
+                </ol>
+            </div>
+        </header>
+
+        <main class="layout">
+            <section class="panel">
+                <div class="section-heading">
+                    <h2>Configuration</h2>
+                    <p>Keys stay on your machine unless you choose to store them in this browser.</p>
+                </div>
+
+                <div id="messageBox" class="message" hidden></div>
+
+                <div class="field-grid two-up">
+                    <label class="field">
+                        <span>Anthropic API key</span>
+                        <input type="password" id="anthropicKey" placeholder="sk-ant-...">
+                    </label>
+                    <label class="field">
+                        <span>Google Gemini API key</span>
+                        <input type="password" id="geminiKey" placeholder="AIza...">
+                    </label>
+                    <label class="field">
+                        <span>Ollama API key</span>
+                        <input type="password" id="ollamaKey" placeholder="Optional for Ollama cloud">
+                    </label>
+                    <label class="field">
+                        <span>OpenAI API key</span>
+                        <input type="password" id="openaiKey" placeholder="sk-...">
+                    </label>
+                </div>
+
+                <label class="toggle">
+                    <input type="checkbox" id="saveKeysToggle">
+                    <span>Store keys in this browser for later sessions</span>
+                </label>
+
+                <div class="section-heading compact">
+                    <h2>Agents</h2>
+                    <p>`Auto` picks a provider based on the keys you supplied. Leave model blank to use a sensible default.</p>
+                </div>
+
+                <div class="agent-grid">
+                    <article class="agent-card">
+                        <h3>Compliance</h3>
+                        <p>Objective formatting, eligibility, and solicitation-fit checks.</p>
+                        <div class="field-grid">
+                            <label class="field">
+                                <span>Provider</span>
+                                <select data-agent-provider="compliance">
+                                    <option value="auto" selected>Auto</option>
+                                    <option value="gemini">Gemini</option>
+                                    <option value="ollama">Ollama</option>
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                </select>
+                            </label>
+                            <label class="field">
+                                <span>Model</span>
+                                <input type="text" data-agent-model="compliance" placeholder="Default for provider">
+                            </label>
+                        </div>
+                    </article>
+
+                    <article class="agent-card">
+                        <h3>Reviewer A</h3>
+                        <p>Full review across intellectual merit, broader impacts, and technical rigor.</p>
+                        <div class="field-grid">
+                            <label class="field">
+                                <span>Provider</span>
+                                <select data-agent-provider="reviewer_a">
+                                    <option value="auto" selected>Auto</option>
+                                    <option value="gemini">Gemini</option>
+                                    <option value="ollama">Ollama</option>
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                </select>
+                            </label>
+                            <label class="field">
+                                <span>Model</span>
+                                <input type="text" data-agent-model="reviewer_a" placeholder="Default for provider">
+                            </label>
+                        </div>
+                    </article>
+
+                    <article class="agent-card">
+                        <h3>Reviewer B</h3>
+                        <p>Independent full review from a second panel perspective.</p>
+                        <div class="field-grid">
+                            <label class="field">
+                                <span>Provider</span>
+                                <select data-agent-provider="reviewer_b">
+                                    <option value="auto" selected>Auto</option>
+                                    <option value="gemini">Gemini</option>
+                                    <option value="ollama">Ollama</option>
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                </select>
+                            </label>
+                            <label class="field">
+                                <span>Model</span>
+                                <input type="text" data-agent-model="reviewer_b" placeholder="Default for provider">
+                            </label>
+                        </div>
+                    </article>
+
+                    <article class="agent-card">
+                        <h3>Reviewer C</h3>
+                        <p>Independent full review from a third panel perspective.</p>
+                        <div class="field-grid">
+                            <label class="field">
+                                <span>Provider</span>
+                                <select data-agent-provider="reviewer_c">
+                                    <option value="auto" selected>Auto</option>
+                                    <option value="gemini">Gemini</option>
+                                    <option value="ollama">Ollama</option>
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                </select>
+                            </label>
+                            <label class="field">
+                                <span>Model</span>
+                                <input type="text" data-agent-model="reviewer_c" placeholder="Default for provider">
+                            </label>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <h2>Documents</h2>
+                    <p>Paste text directly or upload `.txt`, `.md`, or `.pdf`. PDF extraction runs in-browser via PDF.js.</p>
+                </div>
+
+                <div class="field-grid two-up">
+                    <div class="document-column">
+                        <label class="field">
+                            <span>Proposal text</span>
+                            <textarea id="proposalText" rows="16" placeholder="Paste the proposal text here."></textarea>
+                        </label>
+                        <div class="upload-row">
+                            <button class="ghost-button" type="button" data-file-trigger="proposalFile">Upload proposal</button>
+                            <span id="proposalFileName" class="file-name">No file selected</span>
+                            <input type="file" id="proposalFile" accept=".txt,.md,.pdf" hidden>
+                        </div>
+                    </div>
+
+                    <div class="document-column">
+                        <label class="field">
+                            <span>Solicitation text</span>
+                            <textarea id="solicitationText" rows="16" placeholder="Paste the solicitation or program description here."></textarea>
+                        </label>
+                        <div class="upload-row">
+                            <button class="ghost-button" type="button" data-file-trigger="solicitationFile">Upload solicitation</button>
+                            <span id="solicitationFileName" class="file-name">No file selected</span>
+                            <input type="file" id="solicitationFile" accept=".txt,.md,.pdf" hidden>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button id="startReviewButton" class="primary-button" type="button">Start review</button>
+                    <button id="resetButton" class="ghost-button" type="button">Reset</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <h2>Job Status</h2>
+                    <p>Progress updates render as the server advances through the pipeline.</p>
+                </div>
+
+                <div id="jobSummary" class="job-summary muted">No active job.</div>
+                <div id="progressGrid" class="progress-grid"></div>
+            </section>
+
+            <section class="panel results-panel">
+                <div class="section-heading">
+                    <h2>Results</h2>
+                    <p>Reports populate incrementally as each step completes.</p>
+                </div>
+
+                <div id="tabBar" class="tab-bar"></div>
+                <div id="resultsContent" class="results-content">
+                    <div class="empty-results">
+                        Submit a job to populate compliance, reviewer reports, debate rounds, and the final consensus.
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

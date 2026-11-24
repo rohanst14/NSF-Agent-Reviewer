@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Please cite this research project when using it."
+title: "AI Agents For NSF Grants Proposal"
+authors:
+  - given-names: Daniel
+    family-names: Yu
+  - given-names: Rohan
+    family-names: Thakur
+  - given-names: Quinn
+    family-names: Madden
+repository-code: https://github.com/rohanst14/NSF-Agent-Reviewer

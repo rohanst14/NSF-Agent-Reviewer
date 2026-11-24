@@ -1,0 +1,191 @@
+OUTPUT VARIABILITY NOTES
+
+The main outputs you can vary are the amount of text each agent produces
+and how much detail the final UI shows.
+
+================================================================
+1. VARIABLE OUTPUT AREAS
+================================================================
+
+COMPLIANCE REPORT
+
+1. Executive summary length
+Current code:
+- One short summary paragraph.
+- Controlled by prompt wording in `nsf_reviewer_server.py`.
+
+2. Number of findings
+Current code:
+- Backend keeps up to 12 findings.
+- See normalization in `nsf_reviewer_server.py`.
+
+3. Number of blocking / non-blocking issues
+Current code:
+- Backend keeps up to 8 items because list normalization caps lists at 8.
+
+4. Number of recommendations
+Current code:
+- Backend keeps up to 8 recommendations because list normalization caps lists at 8.
+
+
+EACH REVIEWER REPORT
+
+1. Executive summary length
+Current code:
+- Prompt asks for a 3-5 sentence summary.
+
+2. Depth of the three review sections
+Current code:
+- Three sections are always produced:
+  - Intellectual Merit
+  - Broader Impacts
+  - Technical Assessment
+- Each is currently expected as free-text paragraphs.
+
+3. Number of strengths
+Current code:
+- Prompt asks for 3-6 concise bullets.
+- Backend keeps up to 8.
+
+4. Number of weaknesses
+Current code:
+- Prompt asks for 3-6 concise bullets.
+- Backend keeps up to 8.
+
+5. Number of questions
+Current code:
+- Prompt asks for 2-5 questions.
+- Backend keeps up to 8.
+
+6. Number of recommendations
+Current code:
+- Prompt asks for 2-5 recommendations.
+- Backend keeps up to 8.
+
+
+DISCUSSION OUTPUT
+
+1. Round 1 message length
+Current code:
+- Prompt asks for 2-4 paragraphs summarizing the reviewer position.
+
+2. Round 2 debate length
+Current code:
+- Prompt asks for 2-4 paragraphs responding to reviewer claims.
+- Also requires direct disagreement/agreement and named references to other reviewers.
+
+3. Round 3 final position length
+Current code:
+- Prompt asks for 1-3 concise paragraphs stating the final position.
+
+
+FINAL CONSENSUS
+
+1. Summary length
+Current code:
+- One synthesized summary paragraph/string from the backend.
+
+2. Number of consensus strengths
+Current code:
+- Frontend shows up to the first 6.
+
+3. Number of consensus weaknesses
+Current code:
+- Frontend shows up to the first 6.
+
+4. Number of action items
+Current code:
+- Frontend shows up to the first 6.
+
+5. Number of dissent items
+Current code:
+- No fixed hard count in prompt, but frontend renders whatever is produced.
+- In practice, this is bounded by the number of reviewers.
+
+================================================================
+2. CURRENT QUANTITY SETTINGS
+================================================================
+
+COMPLIANCE
+
+- Findings: up to about 12
+- Blocking issues: up to about 8
+- Non-blocking issues: up to about 8
+- Recommendations: up to about 8
+
+
+REVIEWER REPORT
+
+- Strengths: up to 8 kept by backend
+- Weaknesses: up to 8 kept by backend
+- Questions: up to 8 kept by backend
+- Recommendations: up to 8 kept by backend
+
+
+FINAL CONSENSUS
+
+- Strengths shown: first 6
+- Weaknesses shown: first 6
+- Action items shown: first 6
+
+================================================================
+3. WHERE THIS IS CONTROLLED IN THE CODE
+================================================================
+
+1. Backend normalization caps
+File:
+- `nsf_reviewer_server.py`
+
+What it controls:
+- max number of list items kept
+- score normalization
+- final consensus list truncation
+
+2. Prompt instructions
+File:
+- `nsf_reviewer_server.py`
+
+What it controls:
+- number of bullets requested
+- expected paragraph lengths
+- expected summary/detail depth
+- round 1 / round 2 / round 3 discussion lengths
+
+3. Frontend rendering
+File:
+- `static/app.js`
+
+What it controls:
+- how many items are displayed from consensus lists
+- which sections are shown
+- how scores and discussion are rendered
+
+================================================================
+4. RECOMMENDED WAY TO MAKE OUTPUT LENGTH ADJUSTABLE
+================================================================
+
+If adjustable output length is needed, the cleanest option is to add a UI control like:
+
+- Short
+- Medium
+- Detailed
+
+That setting could change:
+
+- paragraph length
+- bullet counts
+- discussion length
+- final summary size
+
+================================================================
+5. SIMPLE SUMMARY
+================================================================
+
+Right now the code already supports variable-style outputs through prompts and
+backend caps, but the values are fixed in code.
+
+If needed, these can be exposed as a user-selectable detail level:
+
+- Short
+- Medium
+- Detailed
